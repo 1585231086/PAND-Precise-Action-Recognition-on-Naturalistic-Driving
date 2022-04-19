@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData">
+    <serverData>
+      <paths name="10.112.7.175">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/spring/aicity/code/zhy/ActionDetection-AFSD-master" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="10.112.7.175 (1)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/spring/aicity/code/zhy/ActionDetection-AFSD-master" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zhy@10.112.153.175">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

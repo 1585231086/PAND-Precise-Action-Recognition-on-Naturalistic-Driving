@@ -1,0 +1,146 @@
+{
+    "info": {
+        "description": "For testing COCO dataset only.",
+        "year": 2020,
+        "date_created": "2020/06/20"
+    },
+    "licenses": [
+        {
+            "url": "http://creativecommons.org/licenses/by-nc-sa/2.0/",
+            "id": 1,
+            "name": "Attribution-NonCommercial-ShareAlike License"
+        }
+
+    ],
+    "categories": [
+        {
+            "supercategory": "person",
+            "id": 1,
+            "name": "person",
+            "keypoints": [
+                "nose",
+                "left_eye",
+                "right_eye",
+                "left_ear",
+                "right_ear",
+                "left_shoulder",
+                "right_shoulder",
+                "left_elbow",
+                "right_elbow",
+                "left_wrist",
+                "right_wrist",
+                "left_hip",
+                "right_hip",
+                "left_knee",
+                "right_knee",
+                "left_ankle",
+                "right_ankle"
+            ],
+            "skeleton": [
+                [
+                    16,
+                    14
+                ],
+                [
+                    14,
+                    12
+                ],
+                [
+                    17,
+                    15
+                ],
+                [
+                    15,
+                    13
+                ],
+                [
+                    12,
+                    13
+                ],
+                [
+                    6,
+                    12
+                ],
+                [
+                    7,
+                    13
+                ],
+                [
+                    6,
+                    7
+                ],
+                [
+                    6,
+                    8
+                ],
+                [
+                    7,
+                    9
+                ],
+                [
+                    8,
+                    10
+                ],
+                [
+                    9,
+                    11
+                ],
+                [
+                    2,
+                    3
+                ],
+                [
+                    1,
+                    2
+                ],
+                [
+                    1,
+                    3
+                ],
+                [
+                    2,
+                    4
+                ],
+                [
+                    3,
+                    5
+                ],
+                [
+                    4,
+                    6
+                ],
+                [
+                    5,
+                    7
+                ]
+            ]
+        }
+    ],
+    "images": [
+        {
+            "license": 4,
+            "file_name": "frame000000.jpg",
+            "height": 1080,
+            "width": 1920,
+            "id": 785
+        }
+    ],
+    "annotations": [
+        {
+            "segmentation": [],
+            "num_keypoints": 17,
+            "area": 27789.11055,
+            "iscrowd": 0,
+            "keypoints": [],
+            "image_id": 785,
+            "bbox": [
+                973,
+                299,
+                1638,
+                1044
+            ],
+            "category_id": 1,
+            "id": 1
+        }
+    ]
+}
