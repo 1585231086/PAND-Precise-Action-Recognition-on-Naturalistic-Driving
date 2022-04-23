@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # Getting Started
 
 This page provides basic tutorials about the usage of PAND.
