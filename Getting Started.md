@@ -93,6 +93,7 @@ python anet_data/video2npy.py configs/thumos14_local.yaml
 # inference
 python3 AFSD/thumos14/test.py configs/thumos14.yaml --checkpoint_path=models/thumos14/checkpoint-150.ckpt --output_json=thumos14_rgb.json
 # NMS process
+python process0.py  --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect
 python time_postp.py --input_dir thumos14_rgb.json --output_dir ./output --recog_result_dir ../../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --video_ids /xxxx/Aicity/data/video_ids.csv
 
 # post process
