@@ -80,8 +80,8 @@ python pose_pkl_build.py --det_root /xxxx/Aicity/data_detect --output /xxxx/Aici
 cd ..
 cd Swin-transformer/Video-Swin-Transformer-master
 python tools/batch_inference.py ./work_dirs/exp4/swin_base_patch244_window877_kinetics400_1k.py ./work_dirs/exp4/latest.pth /xxxx/Aicity/data ./label_map.txt --step 4 --device cuda:0 --view dash
-python tools/batch_inference.py ./work_dirs/exp5/swin_base_patch244_window877_kinetics400_1k.py ./work_dirs/exp4/latest.pth /xxxx/Aicity/data ./label_map.txt --step 4 --device cuda:0 --view right
-python tools/batch_inference.py ./work_dirs/exp6/swin_base_patch244_window877_kinetics400_1k.py ./work_dirs/exp4/latest.pth /xxxx/Aicity/data ./label_map.txt --step 4 --device cuda:0 --view rear
+python tools/batch_inference.py ./work_dirs/exp5/swin_base_patch244_window877_kinetics400_1k.py ./work_dirs/exp5/latest.pth /xxxx/Aicity/data ./label_map.txt --step 4 --device cuda:0 --view right
+python tools/batch_inference.py ./work_dirs/exp6/swin_base_patch244_window877_kinetics400_1k.py ./work_dirs/exp6/latest.pth /xxxx/Aicity/data ./label_map.txt --step 4 --device cuda:0 --view rear
 
 # TAL
 cd ..
