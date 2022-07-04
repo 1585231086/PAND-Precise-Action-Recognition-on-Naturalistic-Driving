@@ -88,7 +88,7 @@ def div_frame(video_path, output_img_path):
     rate = 4
     num_frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
     t=time.time()
-    while(count<30):#TODO
+    while(True):#TODO
         ret, frame = cap.read()
         # show a frame
         if ret is True:
