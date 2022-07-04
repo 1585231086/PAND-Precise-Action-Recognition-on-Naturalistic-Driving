@@ -9,10 +9,10 @@ dataset:
     clip_stride: 30
     crop_size: 96
   testing:
-    video_mp4_path: E:\data\A2\A2\test
-    video_info_path: E:\data\A2\A2\test_video_info.csv
-    video_anno_path: E:\s_program\div_frame\anno_test1.csv
-    video_data_path: E:\data\A2\A2\test_npy
+    video_mp4_path: E:\data\A2\A2\test # TODO: change! the path of the video mp4 source file
+    video_info_path: E:\data\A2\A2\test_video_info.csv # TODO: change! the output path of the npy file
+    video_anno_path: E:\s_program\div_frame\anno_test1.csv # TODO: change! the path of the video annotation
+    video_data_path: E:\data\A2\A2\test_npy # TODO: change! 
     crop_size: 96
     clip_length: 256
     clip_stride: 128
@@ -37,6 +37,6 @@ testing:
   top_k: 5000
   nms_thresh: 0.5
   nms_sigma: 0.5
-  checkpoint_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/data/ckp/checkpoint-15.ckpt
+  checkpoint_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/data/ckp/checkpoint-15.ckpt # TODO: change! 
   output_path: ./output
   output_json: detection_results.json
