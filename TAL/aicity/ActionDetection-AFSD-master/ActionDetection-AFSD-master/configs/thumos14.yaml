@@ -9,10 +9,10 @@ dataset:
     clip_stride: 30
     crop_size: 96
   testing:
-    video_mp4_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/A2/test_npy
-    video_info_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/A2/test_video_info.csv
-    video_anno_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/A2/anno_test.csv
-    video_data_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/A2/test_npy/
+    video_mp4_path: /home/xyc/AICity/data # /xxxx/Aicity/videos
+    video_info_path: /home/xyc/data/AICity/info/test_video_info.csv # /xxxx/Aicity/info/test_video_info.csv
+    video_anno_path: /home/xyc/data/AICity/anno/test_Annotation_ours.csv # Not used
+    video_data_path: /home/xyc/AICity/dataB # /xxxx/Aicity/dataNPY
     crop_size: 96
     clip_length: 256
     clip_stride: 128
@@ -21,7 +21,7 @@ model:
   in_channels: 3
   freeze_bn: true
   freeze_bn_affine: true
-  backbone_model: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/data/ckp/rgb_imagenet.pt
+  backbone_model: /home/xyc/AICity/aicity/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master/models/thumos14/ckp/rgb_imagenet.pt
 
 training:
   batch_size: 2
@@ -37,6 +37,6 @@ testing:
   top_k: 5000
   nms_thresh: 0.5
   nms_sigma: 0.5
-  checkpoint_path: /raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/data/ckp/checkpoint-15.ckpt
+  checkpoint_path: /home/xyc/AICity/aicity/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master/models/thumos14/checkpoint-150.ckpt # TODO checkpoint-150.ckpt's dir.
   output_path: ./output
   output_json: detection_results.json
