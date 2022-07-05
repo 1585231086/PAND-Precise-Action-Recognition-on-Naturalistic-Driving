@@ -20,41 +20,42 @@ This page provides basic tutorials about the usage of PAND.
 The folder structure:
 
 ```
-Aicity
-├── annotations
-├── bottle_detect
-├── cellphone_detect
-├── data
-│   ├── VIDEO1
-│   │   ├── frame000000.jpg
-│   │   ├── frame000001.jpg
-│   │   ├── ...
-│   ├── VIDEO2
-│   │   ├── frame000000.jpg
-│   │   ├── frame000001.jpg
-│   │   ├── ...
-│   ├── ...
-├── data_detect
-│   ├── VIDEO1
-│   │   ├── bbox_reuslts.txt
-│   │   ├── frame000000.jpg
-│   │   ├── frame000001.jpg
-│   │   ├── ...
-│   ├── VIDEO2
-│   │   ├── bbox_reuslts.txt
-│   │   ├── frame000000.jpg
-│   │   ├── frame000001.jpg
-│   │   ├── ...
-│   ├── ...
-├── labels
-├── pose
-├── videos
-│   ├── user_id_xxx
-│   │   ├── VIDEO1.MP4
-│   │   ├── VIDEO2.MP4
-│   │   ├── ...
-│   ├── ...
-├── video_ids.csv
+/xxxx
+  ├──Aicity
+    ├── annotations
+    ├── bottle_detect
+    ├── cellphone_detect
+    ├── data
+    │   ├── VIDEO1
+    │   │   ├── frame000000.jpg
+    │   │   ├── frame000001.jpg
+    │   │   ├── ...
+    │   ├── VIDEO2
+    │   │   ├── frame000000.jpg
+    │   │   ├── frame000001.jpg
+    │   │   ├── ...
+    │   ├── ...
+    ├── data_detect
+    │   ├── VIDEO1
+    │   │   ├── bbox_reuslts.txt
+    │   │   ├── frame000000.jpg
+    │   │   ├── frame000001.jpg
+    │   │   ├── ...
+    │   ├── VIDEO2
+    │   │   ├── bbox_reuslts.txt
+    │   │   ├── frame000000.jpg
+    │   │   ├── frame000001.jpg
+    │   │   ├── ...
+    │   ├── ...
+    ├── labels
+    ├── pose
+    ├── videos
+    │   ├── user_id_xxx
+    │   │   ├── VIDEO1.MP4
+    │   │   ├── VIDEO2.MP4
+    │   │   ├── ...
+    │   ├── ...
+    ├── video_ids.csv
 ```
 
 ## Inference with Pre-Trained Models
@@ -87,15 +88,13 @@ python tools/batch_inference.py ./work_dirs/exp6/swin_base_patch244_window877_ki
 
 # TAL
 cd ..
-cd TAL/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master
+cd TAL/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master/AFSD
 # Convert video to npy file
-python AFSD/anet_data/video2npy.py --video_root_dir /xxxx/Aicity/videos --output_root_dir /xxxx/Aicity/dataNPY
+python anet_data/video2npy.py --video_root_dir /xxxx/Aicity/videos --output_root_dir /xxxx/Aicity/dataNPY
 # inference
-cd ..
-python AFSD/thumos14/test.py configs/thumos14.yaml --checkpoint_path=models/thumos14/checkpoint-150.ckpt --output_json=thumos14_rgb.json
+python thumos14/test.py ../configs/thumos14.yaml --checkpoint_path=models/thumos14/checkpoint-150.ckpt --output_json=../../../thumos14_rgb.json
 # NMS process
-cd ..
-cd ..
+cd ../../../
 python process0.py  --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect
 python time_postp.py --input_dir thumos14_rgb.json --output_dir ./output --recog_result_dir ../../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --video_ids /xxxx/Aicity/data/video_ids.csv
 
@@ -108,4 +107,5 @@ python submit_zhy_new.py --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_
 ```
 ### Contact
 Hangyue Zhao, zhaohy21315@bupt.edu.cn
+
 Yuchao Xiao, ycxiao@bupt.edu.cn
