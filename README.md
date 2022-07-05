@@ -106,4 +106,6 @@ cd Post_process
 python submit_zhy_new.py --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect --TAL_result_dir ../TAL/aicity/output
 
 ```
-
+### Contact
+Hangyue Zhao, zhaohy21315@bupt.edu.cn
+Yuchao Xiao, ycxiao@bupt.edu.cn
