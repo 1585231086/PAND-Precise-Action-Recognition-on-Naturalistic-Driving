@@ -14,10 +14,10 @@ def rmdir(pdir):
         print('{} target dose not exist.'.format(pdir))
 
 def mkdir(pdir):
-    if os.path.isdir(pdir):
+    if os.path.exists(pdir):
         print("{} target has existed。".format(pdir))
     else:
-        os.mkdir(pdir)
+        os.makedirs(pdir)
         print('{} dir is built。'.format(pdir))
 
 parser = argparse.ArgumentParser()
@@ -25,7 +25,6 @@ parser.add_argument('--thread_num', default=1, type=int)
 parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
 parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
 parser.add_argument('--video_info_path', type=str, default='/home/xyc/data/AICity/info/test_video_info.csv')
-parser.add_argument('--video_anno_path', type=str, default='/home/xyc/data/AICity/anno/test_Annotation_ours.csv')
 parser.add_argument('--max_frame_num', type=int, default=768)
 args = parser.parse_args()
 
@@ -35,15 +34,13 @@ output_root_dir = args.output_root_dir
 max_frame_num = args.max_frame_num
 
 mkdir(output_root_dir)
-
+mkdir(os.path.split(args.video_info_path)[0])
 videos_path = []
 
 with open(args.video_info_path, "w") as f:
     csv_writer = csv.writer(f, dialect="excel")
     csv_writer.writerow(['video','fps','sample_fps','count','sample_count'])
-with open(args.video_anno_path, "w") as f:
-    csv_writer = csv.writer(f, dialect="excel")
-    csv_writer.writerow(['video','type','type_idx','start','end','startFrame','endFrame'])
+    
 for user in os.listdir(video_root_dir):
     for file in os.listdir(os.path.join(video_root_dir,user)):
         if file.endswith(('.MP4','.mp4')):
@@ -54,9 +51,6 @@ for user in os.listdir(video_root_dir):
             with open(args.video_info_path, "a") as f:
                 csv_writer = csv.writer(f, dialect="excel")
                 csv_writer.writerow([user+'/'+file.split('.')[0],fpsV, fpsV, count_total, count_total])
-            with open(args.video_anno_path, "a") as f:
-                csv_writer = csv.writer(f, dialect="excel")
-                csv_writer.writerow([user+'/'+file.split('.')[0],0,0,0,0,0,0])
 
 def sub_processor(pid, files):
     for file in files[:]:
