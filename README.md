@@ -87,9 +87,9 @@ python tools/batch_inference.py ./work_dirs/exp6/swin_base_patch244_window877_ki
 
 # TAL
 cd ..
-cd TAL/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master/AFSD
+cd TAL/aicity/ActionDetection-AFSD-master/ActionDetection-AFSD-master
 # Convert video to npy file
-python anet_data/video2npy.py configs/thumos14_local.yaml
+python AFSD/anet_data/video2npy.py --video_root_dir /xxxx/Aicity/videos --output_root_dir /xxxx/Aicity/dataNPY
 # inference
 cd ..
 python AFSD/thumos14/test.py configs/thumos14.yaml --checkpoint_path=models/thumos14/checkpoint-150.ckpt --output_json=thumos14_rgb.json
