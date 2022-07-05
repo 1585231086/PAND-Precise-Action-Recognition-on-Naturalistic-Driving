@@ -1,6 +1,5 @@
 import sys
-sys.path.append('/raid/aicity/code/zhy/ActionDetection-AFSD-master')
-
+sys.path.insert(0,'../')
 import torch
 import torch.nn as nn
 import os
