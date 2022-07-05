@@ -4,6 +4,7 @@ import argparse
 import cv2
 import numpy as np
 import shutil
+import csv
 
 def rmdir(pdir):
     if os.path.isdir(pdir):
@@ -21,8 +22,10 @@ def mkdir(pdir):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--thread_num', default=1, type=int)
-parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/video_data')
+parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
 parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
+parser.add_argument('--video_info_path', type=str, default='/home/xyc/data/AICity/info/test_video_info.csv')
+parser.add_argument('--video_anno_path', type=str, default='/home/xyc/data/AICity/anno/test_Annotation_ours.csv')
 parser.add_argument('--max_frame_num', type=int, default=768)
 args = parser.parse_args()
 
@@ -34,10 +37,26 @@ max_frame_num = args.max_frame_num
 mkdir(output_root_dir)
 
 videos_path = []
+
+with open(args.video_info_path, "w") as f:
+    csv_writer = csv.writer(f, dialect="excel")
+    csv_writer.writerow(['video','fps','sample_fps','count','sample_count'])
+with open(args.video_anno_path, "w") as f:
+    csv_writer = csv.writer(f, dialect="excel")
+    csv_writer.writerow(['video','type','type_idx','start','end','startFrame','endFrame'])
 for user in os.listdir(video_root_dir):
     for file in os.listdir(os.path.join(video_root_dir,user)):
         if file.endswith(('.MP4','.mp4')):
             videos_path.append(os.path.join(video_root_dir,user,file))
+            capV = cv2.VideoCapture(os.path.join(video_root_dir,user,file))
+            fpsV = int(capV.get(cv2.CAP_PROP_FPS))
+            count_total = capV.get(cv2.CAP_PROP_FRAME_COUNT)
+            with open(args.video_info_path, "a") as f:
+                csv_writer = csv.writer(f, dialect="excel")
+                csv_writer.writerow([user+'/'+file.split('.')[0],fpsV, fpsV, count_total, count_total])
+            with open(args.video_anno_path, "a") as f:
+                csv_writer = csv.writer(f, dialect="excel")
+                csv_writer.writerow([user+'/'+file.split('.')[0],0,0,0,0,0,0])
 
 def sub_processor(pid, files):
     for file in files[:]:
