@@ -9,16 +9,16 @@ import csv
 def rmdir(pdir):
     if os.path.isdir(pdir):
         shutil.rmtree(pdir)
-        print("{}目标已删除。".format(pdir))
+        print("{} target has been deleted。".format(pdir))
     else:
-        print('{}目录不存在。'.format(pdir))
+        print('{} target dose not exist.'.format(pdir))
 
 def mkdir(pdir):
     if os.path.isdir(pdir):
-        print("{}目标已存在。".format(pdir))
+        print("{} target has existed。".format(pdir))
     else:
         os.mkdir(pdir)
-        print('{}目录已创建。'.format(pdir))
+        print('{} dir is built。'.format(pdir))
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--thread_num', default=1, type=int)
