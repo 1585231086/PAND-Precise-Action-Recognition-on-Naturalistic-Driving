@@ -3,30 +3,51 @@ import multiprocessing as mp
 import argparse
 import cv2
 import numpy as np
+import shutil
+
+def rmdir(pdir):
+    if os.path.isdir(pdir):
+        shutil.rmtree(pdir)
+        print("{}目标已删除。".format(pdir))
+    else:
+        print('{}目录不存在。'.format(pdir))
+
+def mkdir(pdir):
+    if os.path.isdir(pdir):
+        print("{}目标已存在。".format(pdir))
+    else:
+        os.mkdir(pdir)
+        print('{}目录已创建。'.format(pdir))
 
 parser = argparse.ArgumentParser()
-parser.add_argument('thread_num', type=int)
-parser.add_argument('--video_dir', type=str, default='/raid/aicity/data/A1')
-parser.add_argument('--output_dir', type=str, default='/raid/aicity/code/zhy/ActionDetection-AFSD-master/ActionDetection-AFSD-master/data/data')
+parser.add_argument('--thread_num', default=1, type=int)
+parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
+parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
 parser.add_argument('--max_frame_num', type=int, default=768)
 args = parser.parse_args()
 
 thread_num = args.thread_num
-video_dir = args.video_dir
-output_dir = args.output_dir
+video_root_dir = args.video_root_dir
+output_root_dir = args.output_root_dir
 max_frame_num = args.max_frame_num
 
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+mkdir(output_root_dir)
 
-files = sorted(os.listdir(video_dir))
+videos_path = []
+for user in os.listdir(video_root_dir):
+    for file in os.listdir(os.path.join(video_root_dir,user)):
+        if file.endswith(('.MP4','.mp4')):
+            videos_path.append(os.path.join(video_root_dir,user,file))
 
 def sub_processor(pid, files):
     for file in files[:]:
-        file_name = os.path.splitext(file)[0]
-        print(file_name)
-        target_file = os.path.join(output_dir, file_name + '.npy')
-        cap = cv2.VideoCapture(os.path.join(video_dir, file))
+        user = os.path.split(os.path.split(file)[0])[1]
+        mkdir(os.path.join(output_root_dir, user))
+        file_name = os.path.splitext(os.path.split(file)[1])[0]
+
+        target_file = os.path.join(output_root_dir, user, file_name + '.npy')
+        print("{:s} is processing... \tTarget file is {:s}.".format(file, target_file))
+        cap = cv2.VideoCapture(file)
         count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
         imgs = []
         while True:
@@ -43,14 +64,14 @@ def sub_processor(pid, files):
         np.save(target_file, imgs)
 
 processes = []
-video_num = len(files)
+video_num = len(videos_path)
 per_process_video_num = video_num // thread_num
 
 for i in range(thread_num):
     if i == thread_num - 1:
-        sub_files = files[i * per_process_video_num:]
+        sub_files = videos_path[i * per_process_video_num:]
     else:
-        sub_files = files[i * per_process_video_num: (i + 1) * per_process_video_num]
+        sub_files = videos_path[i * per_process_video_num: (i + 1) * per_process_video_num]
     p = mp.Process(target=sub_processor, args=(i, sub_files))
     p.start()
     processes.append(p)
