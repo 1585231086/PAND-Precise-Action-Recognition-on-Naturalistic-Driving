@@ -10,7 +10,7 @@ import random
 import math
 
 
-def get_class_index_map(class_info_path='thumos_annotations/Class Index_Detection.txt'):
+def get_class_index_map(class_info_path='../thumos_annotations/Class Index_Detection.txt'):
     txt = np.loadtxt(class_info_path, dtype=str)
     originidx_to_idx = {}
     idx_to_class = {}
