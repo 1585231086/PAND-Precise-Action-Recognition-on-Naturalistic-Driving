@@ -21,7 +21,7 @@ def mkdir(pdir):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--thread_num', default=1, type=int)
-parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
+parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/video_data')
 parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
 parser.add_argument('--max_frame_num', type=int, default=768)
 args = parser.parse_args()
