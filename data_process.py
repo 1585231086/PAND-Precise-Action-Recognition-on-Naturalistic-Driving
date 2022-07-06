@@ -352,4 +352,4 @@ if __name__ == '__main__':
     # for test B
     args = argspase()
     mkdir(args.data_root)
-    batch_div_video2frames(args.video_root, args.data_root)
+    batch_div_video2frames(args.video_dir, args.data_root)
