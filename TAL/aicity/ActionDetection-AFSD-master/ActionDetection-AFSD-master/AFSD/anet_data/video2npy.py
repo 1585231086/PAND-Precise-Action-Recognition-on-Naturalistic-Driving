@@ -7,6 +7,9 @@ import shutil
 import csv
 from tqdm import tqdm, trange
 import time
+import sys
+sys.path.insert(0,'../')
+from AFSD.common.videotransforms import imresize
 
 def rmdir(pdir):
     if os.path.isdir(pdir):
@@ -25,7 +28,7 @@ def mkdir(pdir):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--thread_num', default=6, type=int)
+parser.add_argument('--thread_num', default=1, type=int)
 parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
 parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
 parser.add_argument('--video_info_path', type=str, default='/home/xyc/data/AICity/info/test_video_info.csv')
@@ -35,7 +38,6 @@ args = parser.parse_args()
 thread_num = args.thread_num
 video_root_dir = args.video_root_dir
 output_root_dir = args.output_root_dir
-max_frame_num = args.max_frame_num
 
 mkdir(output_root_dir)
 mkdir(os.path.split(args.video_info_path)[0])
@@ -57,7 +59,7 @@ for user in os.listdir(video_root_dir):
                 csv_writer.writerow([user + '/' + file.split('.')[0], fpsV, fpsV, count_total, count_total])
 
 
-def sub_processor(pid, files):
+def sub_processor(pid, files,sample_fps=10,resolution=112):
     for file in files[:]:
         user = os.path.split(os.path.split(file)[0])[1]
         mkdir(os.path.join(output_root_dir, user))
@@ -66,16 +68,38 @@ def sub_processor(pid, files):
         target_file = os.path.join(output_root_dir, user, file_name + '.npy')
         print("{:s} is processing... \tTarget file is {:s}.".format(file, target_file))
         cap = cv2.VideoCapture(file)
+        fps = cap.get(cv2.CAP_PROP_FPS)
         count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
         imgs = []
         t1=time.time()
+        # for i in trange(int(count)):
+        #     ret, frame = cap.read()
+        #     if not ret:
+        #         break
+        #     imgs.append(frame[:, :, ::-1])
+        # if count != len(imgs):
+        #     print('{} frame num is less'.format(file_name))
+        # imgs = np.stack(imgs)
+        # print(imgs.shape)
+        step = fps / sample_fps
+        cur_step = .0
+        cur_count = 0
+        save_count = 0
         for i in trange(int(count)):
             ret, frame = cap.read()
-            if not ret:
+            if ret is False:
                 break
-            imgs.append(frame[:, :, ::-1])
-        if count != len(imgs):
-            print('{} frame num is less'.format(file_name))
+            frame = np.array(frame)[:, :, ::-1]
+            cur_count += 1
+            cur_step += 1
+            if cur_step >= step:
+                cur_step -= step
+                # save the frame
+                target_img = imresize(frame, [int(width//4), int(height//4)], 'bicubic')
+                imgs.append(target_img)
+                save_count += 1
         imgs = np.stack(imgs)
         print(imgs.shape)
         # if max_frame_num is not None:
