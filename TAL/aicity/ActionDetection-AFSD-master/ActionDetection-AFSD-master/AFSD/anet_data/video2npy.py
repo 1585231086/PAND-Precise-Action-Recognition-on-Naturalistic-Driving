@@ -97,7 +97,7 @@ def sub_processor(pid, files,sample_fps=10,resolution=112):
             if cur_step >= step:
                 cur_step -= step
                 # save the frame
-                target_img = imresize(frame, [int(width//4), int(height//4)], 'bicubic')
+                target_img = imresize(frame, [resolution, resolution], 'bicubic')
                 imgs.append(target_img)
                 save_count += 1
         imgs = np.stack(imgs)
