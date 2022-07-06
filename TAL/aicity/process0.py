@@ -14,7 +14,22 @@ from collections import defaultdict, OrderedDict
 from scipy.optimize import linear_sum_assignment
 import argparse
 from tqdm import tqdm
+import shutil
+def rmdir(pdir):
+    if os.path.isdir(pdir):
+        shutil.rmtree(pdir)
+        print("{} target has been deleted。".format(pdir))
+    else:
+        print('{} target dose not exist.'.format(pdir))
 
+
+def mkdir(pdir):
+    if os.path.exists(pdir):
+        print("{} target has existed。".format(pdir))
+    else:
+        os.makedirs(pdir)
+        print('{} dir is built。'.format(pdir))
+        
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
