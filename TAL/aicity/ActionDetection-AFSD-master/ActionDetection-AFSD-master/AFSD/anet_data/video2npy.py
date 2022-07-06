@@ -5,7 +5,8 @@ import cv2
 import numpy as np
 import shutil
 import csv
-
+from tqdm import tqdm, trange
+import time
 
 def rmdir(pdir):
     if os.path.isdir(pdir):
@@ -24,7 +25,7 @@ def mkdir(pdir):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--thread_num', default=1, type=int)
+parser.add_argument('--thread_num', default=6, type=int)
 parser.add_argument('--video_root_dir', type=str, default='/home/xyc/AICity/data/')
 parser.add_argument('--output_root_dir', type=str, default='/home/xyc/AICity/dataB')
 parser.add_argument('--video_info_path', type=str, default='/home/xyc/data/AICity/info/test_video_info.csv')
@@ -67,7 +68,8 @@ def sub_processor(pid, files):
         cap = cv2.VideoCapture(file)
         count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
         imgs = []
-        while True:
+        t1=time.time()
+        for i in trange(int(count)):
             ret, frame = cap.read()
             if not ret:
                 break
@@ -78,7 +80,9 @@ def sub_processor(pid, files):
         print(imgs.shape)
         # if max_frame_num is not None:
         #     imgs = imgs[:max_frame_num]
+        print("Saving.....")
         np.save(target_file, imgs)
+        print("{:s} is done. Cost {:.2f}s".format(target_file,time.time()-t1))
 
 
 processes = []
