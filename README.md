@@ -95,14 +95,15 @@ python anet_data/video2npy.py --video_root_dir /xxxx/Aicity/videos --output_root
 python thumos14/test.py ../configs/thumos14.yaml --checkpoint_path=models/thumos14/checkpoint-150.ckpt --output_json=../../../thumos14_rgb.json
 # NMS process
 cd ../../../
-python process0.py  --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect
-python time_postp.py --input_dir thumos14_rgb.json --output_dir ./output --recog_result_dir ../../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --video_ids /xxxx/Aicity/data/video_ids.csv
+python time_postp.py --input_dir thumos14_rgb.json --output_dir ./output --recog_result_dir ../../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --video_ids /xxxx/Aicity/data/video_ids.csv --first true
+python process0.py  --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect --video_ids /xxxx/Aicity/data/video_ids.csv
+python time_postp.py --input_dir thumos14_rgb.json --output_dir ./output --recog_result_dir ../../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --video_ids /xxxx/Aicity/data/video_ids.csv --first false
 
 # post process
 cd ..
 cd ..
 cd Post_process
-python submit_zhy_new.py --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect --TAL_result_dir ../TAL/aicity/output
+python submit_zhy_new.py --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect --TAL_result_dir ../TAL/aicity/output --video_ids /xxxx/Aicity/data/video_ids.csv
 
 ```
 ### Contact
