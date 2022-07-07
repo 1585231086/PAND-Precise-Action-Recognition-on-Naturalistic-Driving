@@ -881,7 +881,7 @@ def processes_single_video_id_enforced(results_root,
     scores = np.array(scores)
     all_proposals = dict()
     proposals = []
-    score_map = np.zeros((18, len(zhy_stamps)))
+    score_map = np.zeros((18, 18))#len(zhy_stamps)
     for ind in range(len(zhy_stamps)):
         proposals.append([[np.array([int(zhy_stamps[ind][0] * 8), -1,
                                      0]),
