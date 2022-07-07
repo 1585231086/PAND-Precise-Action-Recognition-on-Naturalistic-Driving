@@ -500,6 +500,7 @@ if __name__ == '__main__':
     args.device = global_args.device
     args.det_root = global_args.det_root
     args.output = global_args.output
+    os.makedirs(os.path.split(args.output)[0])
     args.label_file = global_args.label_file
     args.pre = global_args.pre
     anno = ntu_pose_extraction_all(args.det_root, args.label_file, pre = args.pre)
