@@ -149,6 +149,9 @@ def softNMS(video,f,det_file,link_file,dash,first):
         rend.append(tmp_end)
         rscore.append(tmp_score)
         rlabel.append(tmp_label)
+        if max_index >= len(tstart):
+            print(max_index)
+            break
         tstart.pop(max_index)
         tend.pop(max_index)
         tscore.pop(max_index)
