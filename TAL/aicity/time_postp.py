@@ -1,15 +1,8 @@
-import matplotlib.pyplot as plt
-import numpy as np
-
-# plt.show()
 import argparse
 import json
-import multiprocessing as mp
 import os
-import threading
-
+import csv
 import numpy as np
-import tqdm
 import shutil
 
 def rmdir(pdir):
@@ -23,8 +16,10 @@ def mkdir(pdir):
     if os.path.isdir(pdir):
         print("{} path has existed.".format(pdir))
     else:
-        os.mkdir(pdir)
+        os.makedirs(pdir)
         print('{} path has been built.'.format(pdir))
+# Global parameters
+AICITY_DATA_ROOT = '/xxxx/AICity'  # TODO: change to your own data root path.
 
 def IOU(s1, e1, s2, e2):
     """
@@ -42,7 +37,7 @@ def IOU(s1, e1, s2, e2):
     return float(Aand) / Aor
 
 
-def softNMS(video,f,det_file,link_file,dash):
+def softNMS(video,f,det_file,link_file,dash,first):
     """
     soft-NMS for all proposals
     :param df: input dataframe
@@ -60,28 +55,28 @@ def softNMS(video,f,det_file,link_file,dash):
             tend.append(video[i]['segment'][1])
             tscore.append(video[i]['score'])
             tlabel.append(video[i]['label'])
-
-    file =open(det_file)
-    line = file.readline()
-    while line:
+    if not first:
+        file =open(det_file)
         line = file.readline()
-        item=line.split(' ')
-        if item[0]==dash:
-            tstart.append(int(item[2])-1)
-            tend.append(int(item[3]))
-            tscore.append(0.98)
-            tlabel.append(item[2])
+        while line:
+            line = file.readline()
+            item=line.split(' ')
+            if item[0]==dash:
+                tstart.append(int(item[2])-1)
+                tend.append(int(item[3]))
+                tscore.append(0.98)
+                tlabel.append(item[2])
 
-    filepath=open(link_file)
-    line = filepath.readline()
-    while line:
+        filepath=open(link_file)
         line = filepath.readline()
-        item=line.split(' ')
-        if item[0]== dash :
-            tstart.append(int(item[2]))
-            tend.append(int(item[3]))
-            tscore.append(0.87)
-            tlabel.append(item[1])
+        while line:
+            line = filepath.readline()
+            item=line.split(' ')
+            if item[0]== dash :
+                tstart.append(int(item[2]))
+                tend.append(int(item[3]))
+                tscore.append(0.87)
+                tlabel.append(item[1])
 
     list = []
     means=np.mean(datas,axis=0)
@@ -195,7 +190,7 @@ def remove_(a,b):
     return a
 
 
-def sub_processor(raw_file, out_file,f,dash,rear,right,det_file,link_file):
+def sub_processor(raw_file, out_file,f,dash,rear,right,det_file,link_file,first):
     """
     Define job for every subprocess
     :param lock: threading lock
@@ -219,7 +214,7 @@ def sub_processor(raw_file, out_file,f,dash,rear,right,det_file,link_file):
     datas.extend(data['results'][right])
     # for i in range(len(datas)):
     video = datas
-    post_video = softNMS(video,f,det_file,link_file,dash)
+    post_video = softNMS(video,f,det_file,link_file,dash,first)
     dict_.append(post_video)
     viz(dict_[0],f,out_file)
     print()
@@ -505,23 +500,24 @@ if __name__ == "__main__":
     parser.add_argument('--link_file', type=str, default=r'results_submission_second_link.txt',
                         help='action recognition post-processing reuslt ')
     parser.add_argument('--top_number', type=int, nargs='?', default=18)
-    # parser.add_argument('-t', '--thread', type=int, nargs='?', default=8)
-    # parser.add_argument('-m', '--mode', type=str, nargs='?', default='validation')
+    parser.add_argument('--first', type=bool, default=True)
     args = parser.parse_args()
 
     """ Number of proposal needed to keep for every video"""
     top_number = args.top_number
     """ Number of thread for post processing"""
     # thread_num = args.thread
-    post = ['_latest_results_4', '_latest_results_4', '_latest_results_4']
-    with open(os.path.join(AICITY_DATA_ROOT,"video_ids.csv"), 'r') as f:
+    post = ['_swin_dashboard_results_4', '_swin_rearview_results_4', '_swin_rightside_results_4']
+    videos_info = []
+    with open(args.video_ids, 'r') as f: # TODO video_ids.cv
         f_csv = csv.reader(f)
         headers = next(f_csv)
         for row in f_csv:
             videos_info.append(row)
     for i, multi_videos in enumerate(videos_info):
         mkdir(args.output_dir)
-        output_file = os.path.join(args.output_dir, multi_videos[1].split('ard_')[1].split('.MP4')[0])
-        result_file = os.path.join(args.recog_result_dir, multi_videos[1].split('.')[0])+post[0]+'.txt')
+        output_file = os.path.join(args.recog_result_dir,'stamp_results', 'bbox1', multi_videos[1].split('.MP4')[0]+'.txt')
+        mkdir(os.path.split(output_file)[0])
+        result_file = os.path.join(args.recog_result_dir, multi_videos[1].split('.')[0])+post[0]+'.txt'
         sub_processor(args.input_dir, output_file, result_file, multi_videos[1].split('.MP4')[0],
-        multi_videos[2].split('.MP4')[0], multi_videos[3].split('.MP4')[0], args.det_file, args.link_file)
+        multi_videos[2].split('.MP4')[0], multi_videos[3].split('.MP4')[0], args.det_file, args.link_file,args.first)
