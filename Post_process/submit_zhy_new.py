@@ -269,8 +269,6 @@ def post_link(all_proposals, max_interp_time=8, min_const_time=10, max_const_tim
 
 def caculate_iou(stamps,begin,end):
     ious=[]
-    if len(stamps[0])==1:
-        stamps=[stamps]
     for stamp in stamps:
         ious.append((min(end,stamp[1]*8)-max(begin,stamp[0]*8))/(max(end,stamp[1]*8)-min(begin,stamp[0]*8)))
     return ious
@@ -347,6 +345,8 @@ def cascade_filter(proposals, data,zhy_stamps, step, pwm_th, min_const_time=8,ma
 def modify_margin(proposals,data ,zhy_stamps,step):
     all_proposals = dict()
     data_new = data.copy()
+    if zhy_stamps.shape.__len__()==1:
+        zhy_stamps=[zhy_stamps]
     for cls in cls_idxs[1:]:
         if cls in [0,1,2,3,4,5,6,7,8,9,10,11,12,14]:#
             continue
