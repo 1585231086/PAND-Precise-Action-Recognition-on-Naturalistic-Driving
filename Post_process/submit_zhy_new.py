@@ -269,6 +269,8 @@ def post_link(all_proposals, max_interp_time=8, min_const_time=10, max_const_tim
 
 def caculate_iou(stamps,begin,end):
     ious=[]
+    if len(stams[0])==1:
+        stamps=[stamps]
     for stamp in stamps:
         ious.append((min(end,stamp[1]*8)-max(begin,stamp[0]*8))/(max(end,stamp[1]*8)-min(begin,stamp[0]*8)))
     return ious
