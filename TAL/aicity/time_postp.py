@@ -508,6 +508,23 @@ if __name__ == "__main__":
     """ Number of thread for post processing"""
     # thread_num = args.thread
     post = ['_swin_dashboard_results_4', '_swin_rearview_results_4', '_swin_rightside_results_4']
+
+    if args.first:
+        with open(args.video_ids, "w") as f:
+            csv_writer = csv.writer(f, dialect="excel")
+            csv_writer.writerow(['video', 'fps', 'sample_fps', 'count', 'sample_count'])
+
+        video_root_dir = os.path.join(AICITY_DATA_ROOT,'videos')
+        for user in os.listdir(video_root_dir):
+            for file in os.listdir(os.path.join(video_root_dir, user)):
+                if file.endswith(('.MP4', '.mp4')):
+                    videos_path.append(os.path.join(video_root_dir, user, file))
+                    capV = cv2.VideoCapture(os.path.join(video_root_dir, user, file))
+                    fpsV = int(capV.get(cv2.CAP_PROP_FPS))
+                    count_total = int(capV.get(cv2.CAP_PROP_FRAME_COUNT))
+                    with open(args.video_ids, "a") as f:
+                        csv_writer = csv.writer(f, dialect="excel")
+                        csv_writer.writerow([file.split('.')[0], fpsV, fpsV, count_total, count_total])
     videos_info = []
     with open(args.video_ids, 'r') as f: # TODO video_ids.cv
         f_csv = csv.reader(f)
