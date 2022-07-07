@@ -874,37 +874,37 @@ def processes_single_video_id_enforced(results_root,
             data[:, i + 1] = np.convolve(data[:, i + 1], np.ones(7) / 7, 1)
     data = add_cellphone(data, multi_videos[0].split('.MP4')[0])
     data = add_bottle(data, multi_videos[0].split('.MP4')[0])
-    # begin
-    scores = []
-    for stamp in zhy_stamps:
-        scores.append(data[int(stamp[0] * 8 // 4):int(stamp[1] * 8 // 4), 1:].mean(axis=0))
-    scores = np.array(scores)
-    all_proposals = dict()
-    proposals = []
-    score_map = np.zeros((18, 18))#len(zhy_stamps)
-    for ind in range(len(zhy_stamps)):
-        proposals.append([[np.array([int(zhy_stamps[ind][0] * 8), -1,
-                                     0]),
-                           np.array([int(zhy_stamps[ind][1] * 8), -1,
-                                     0])]])
-        score_map[:, ind] = data[int(zhy_stamps[ind][0] * 8 // 4):int(zhy_stamps[ind][1] * 8 // 4), 1:].mean(axis=0)
-    for ind in range(len(zhy_stamps)):
-        ij = np.argmax(score_map)
-
-        i, j = ij // 18, ij % 18
-        print(score_map[i, j])
-        # if score_map[i, j] <=0.3:
-        #     continue
-        start = proposals[j][0][0][0]
-        end = proposals[j][0][-1][0]
-        score = data[int(start // 4):int(end // 4), i + 1].mean()
-        all_proposals[CLASSES[i]] = [[np.array([start, i, score]), np.array([end, i, score])]]
-
-        score_map[:, j] *= 0.5
-        score_map[i, :] *= 0.5
-
-    filtered_proposals = all_proposals
-    # end
+    # # begin
+    # scores = []
+    # for stamp in zhy_stamps:
+    #     scores.append(data[int(stamp[0] * 8 // 4):int(stamp[1] * 8 // 4), 1:].mean(axis=0))
+    # scores = np.array(scores)
+    # all_proposals = dict()
+    # proposals = []
+    # score_map = np.zeros((18, len(zhy_stamps)))
+    # for ind in range(len(zhy_stamps)):
+    #     proposals.append([[np.array([int(zhy_stamps[ind][0] * 8), -1,
+    #                                  0]),
+    #                        np.array([int(zhy_stamps[ind][1] * 8), -1,
+    #                                  0])]])
+    #     score_map[:, ind] = data[int(zhy_stamps[ind][0] * 8 // 4):int(zhy_stamps[ind][1] * 8 // 4), 1:].mean(axis=0)
+    # for ind in range(len(zhy_stamps)):
+    #     ij = np.argmax(score_map)
+    #
+    #     i, j = ij // 18, ij % 18
+    #     print(score_map[i, j])
+    #     # if score_map[i, j] <=0.3:
+    #     #     continue
+    #     start = proposals[j][0][0][0]
+    #     end = proposals[j][0][-1][0]
+    #     score = data[int(start // 4):int(end // 4), i + 1].mean()
+    #     all_proposals[CLASSES[i]] = [[np.array([start, i, score]), np.array([end, i, score])]]
+    #
+    #     score_map[:, j] *= 0.5
+    #     score_map[i, :] *= 0.5
+    #
+    # filtered_proposals = all_proposals
+    # # end
     stamps = data[:, 1] > data[:, 1].mean()
     # stamps= stamps[0:-1]^stamps[1:]
     # idxs = np.where(stamps)
@@ -936,7 +936,7 @@ def processes_single_video_id_enforced(results_root,
     # filtered_proposals = filter_proposals(all_proposals,
     #                  min_const_time=[10, 32],
     #                  TOP_K=5)
-    return filtered_proposals, data
+    return all_proposals, data
 
 
 
