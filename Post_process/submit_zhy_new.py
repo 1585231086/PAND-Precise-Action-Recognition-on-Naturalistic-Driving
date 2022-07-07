@@ -6,6 +6,7 @@
 
 import os
 import sys
+import csv
 import cv2
 import time
 import json
@@ -34,7 +35,7 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import pickle
 # Global parameters
-AICITY_DATA_ROOT = '/xxxx/Aicity' #TODO: change to your own data root.
+AICITY_DATA_ROOT = '/xxxx/AICity' #TODO: change to your own data root.
 coco_classes = ['person',
                'bicycle',
                'car',
@@ -380,7 +381,7 @@ def filter_proposals(all_proposals,
             continue
         for i, proposal in enumerate(all_proposals[clsname]):
             array_proposal = np.array(proposal)
-            out = [array_proposal[0][0], array_proposal[-1][0], array_proposal[:, 2].mean(),i,len(proposal),(array_proposal[-1][0]-array_proposal[0][0] )/8] ###TODO 得分计算还有待完善，没有考虑中间未识别出的帧的影响
+            out = [array_proposal[0][0], array_proposal[-1][0], array_proposal[:, 2].mean(),i,len(proposal),(array_proposal[-1][0]-array_proposal[0][0] )/8]
 
             if ((out[1] - out[0]) / 8 >= min_const_time[0]) and ((out[1] - out[0]) / 8 <= min_const_time[1]):
                 temp_proposals.append(out)
@@ -479,7 +480,7 @@ def processes_single_video_id(results_root,
         for clsname in CLASSES:
             for i, proposal in enumerate(filtered_proposals[clsname]):
                 array_proposal = np.array(proposal)
-                out = [array_proposal[0][0], array_proposal[-1][1], array_proposal[:, 2].mean(),i,len(proposal)*step] ###TODO 得分计算还有待完善，没有考虑中间未识别出的帧的影响
+                out = [array_proposal[0][0], array_proposal[-1][1], array_proposal[:, 2].mean(),i,len(proposal)*step]
                 print(
                     "{:s}-{:d}: {:03d}:{:03d}, {:02d}:{:02d}.{:02d}--{:02d}:{:02d}.{:02d}, {:02d}:{:02d}.{:02d}, {:.4f},  {:d}/{:d}".format(
                         clsname, i, int(out[0]), int(out[1]),
@@ -674,9 +675,9 @@ def add_cellphone(data,video,T=False):
     else:
         # if video.startswith('Dashboard_User_id_72519'):
         #     return data
-        with open(os.path.join(AICITY_DATA_ROOT,'pose','A2_pose.txt'), 'r') as f:
+        with open(os.path.join(AICITY_DATA_ROOT,'pose','B_pose.txt'), 'r') as f:#TODO
             poses = f.readlines() # r'W:\aicity/aicity1/A1'
-        results_root = os.path.join(AICITY_DATA_ROOT,'cellphone_detect/A2')
+        results_root = os.path.join(AICITY_DATA_ROOT,'cellphone_detect')
 
     pose_dict = dict()
 
@@ -744,9 +745,9 @@ def add_bottle(data,video,T=False):
             poses = f.readlines()  # r'W:\aicity/aicity1/A1'
         results_root = os.path.join(AICITY_DATA_ROOT,'bottle_detect/A1')
     else:
-        with open(os.path.join(AICITY_DATA_ROOT,'pose','A2_pose.txt'), 'r') as f:
+        with open(os.path.join(AICITY_DATA_ROOT,'pose','B_pose.txt'), 'r') as f:#TODO
             poses = f.readlines() # r'W:\aicity/aicity1/A1'
-        results_root = os.path.join(AICITY_DATA_ROOT,'bottle_detect/A2')
+        results_root = os.path.join(AICITY_DATA_ROOT,'bottle_detect')
 
     pose_dict = dict()
 
@@ -811,7 +812,7 @@ def processes_single_video_id_enforced(results_root,
     data1=np.loadtxt(os.path.join(results_root, multi_videos[0].split('.')[0])+post[0]+'.txt')
     data2=np.loadtxt(os.path.join(results_root, multi_videos[1].split('.')[0])+post[1]+'.txt')
     data3=np.loadtxt(os.path.join(results_root, multi_videos[2].split('.')[0])+post[2]+'.txt')
-    zhy_stamps=np.loadtxt(os.path.join(results_root,'stamp_results','bbox1', multi_videos[2][-27:-4]+'.txt'),delimiter=',')
+    zhy_stamps=np.loadtxt(os.path.join(results_root,'stamp_results','bbox1', os.path.splitext(multi_videos[0])[0]+'.txt'),delimiter=',')
     # score_mask1 = np.array([[1, 1,1,1,1, 1,0,0,0, 0,0,0,0, 1,1,1,0, 1,1]])
     # score_mask2 = np.array([[1, 0,0,0,0, 0,1,0,1, 1,1,0,0, 0,1,1,1, 0,1]])
     # score_mask3 = np.array([[1, 0,1,1,1, 1,1,1,1, 1,1,1,1, 0,1,0,0, 0,1]])
@@ -890,7 +891,7 @@ def processes_single_video_id_enforced(results_root,
 
     show_time_bar(all_proposals, labels, step=step, N_f=N_f, video=multi_videos[0])
     # second link
-    all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)###TODO
+    all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)
     cnt=0
     for x in all_proposals[CLASSES[2]]:
         if len(x)>3:
@@ -902,7 +903,7 @@ def processes_single_video_id_enforced(results_root,
             data[:, i + 1] = data[:, i + 1] / (data[:, i + 1].max() + 0.001)
             data[:, i + 1] = np.convolve(data[:, i + 1], np.ones(7) / 7, 1)
         all_proposals = link_tubes(data, MAX_INTERRUPTION=4)
-        all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)  ###TODO
+        all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)
 
     all_proposals = modify_margin(all_proposals, data, zhy_stamps, step)
     # filtered_proposals =all_proposals
@@ -949,209 +950,7 @@ def processes_single_video_id_enforced(results_root,
                         out[2], len(proposal)*step+16,
                         int(out[1] - out[0])))
     return filtered_proposals,data
-import csv
-def test_one():
-    ###test
-    step=4
-    interp=20#
-    show=False
-    outprint=True
-    video = 'User_id_49381_0'
-    data1 = np.loadtxt(
-        r'G:\lessons\data\AICityTrack3\AICityTrack3\2022\data_result\val49831\Dashboard_'+video+'_latest_results_4.txt')#Rightside_window_User_id_35133_0_results
-    data2 = np.loadtxt(
-        r'G:\lessons\data\AICityTrack3\AICityTrack3\2022\data_result\val49831\Rear_view_'+video+'_best_top1_acc_epoch_1_results_4.txt')  # Rightside_window_User_id_35133_0_results
-    data3 = np.loadtxt(
-        r'G:\lessons\data\AICityTrack3\AICityTrack3\2022\data_result\val49831\Right_side_window_'+video+'_best_top1_acc_epoch_5_results_4.txt')  # Rightside_window_User_id_35133_0_results
-    N_f = min(len(data1), len(data2), len(data3))  # clip number
-    labels, mask, time_stamps = load_gt(step, r'W:\aicity\aicity1\A1\labels.json', 'Right_side_window_'+video, N_f, 18)
-    zhy_stamps = np.loadtxt(os.path.join(r'G:\lessons\data\AICityTrack3\AICityTrack3\2022\data_result\val49831', 'stamps', video[-27:] + '.txt'),
-                            delimiter=',')
-    # out = post_zhyNMS(data[:,1:19], step, interp, threshold_ratio=0.1, score_threshold=0.25, MIN_LENGTH=5)
 
-    # for clsname in CLASSES[1:]:
-    #     print("{:s}:".format(clsname))
-    #     if clsname in out.keys():
-    #         print(out[clsname])
-    #     else:
-    #         print("\n")
-
-    # score_mask1 = np.array([[1, 1,1,1,1, 0,0,1,1, 0,0,0,1, 1,1,1,0, 1,1]])
-    # score_mask2 = np.array([[1, 1,0,0,0, 0,1,0,0, 1,0,0,0, 1,0,0,0, 0,1]])
-    # score_mask3 = np.array([[1, 1,0,1,1, 1,0,1,0, 1,1,1,1, 0,0,0,1, 0,1]])
-    # score_mask1 = np.array([[1, 1,1,1,1, 1,0,0,1, 0,0,0,0, 1,0,1,0, 1,1]])
-    # score_mask2 = np.array([[1, 0,0,0,0, 0,1,0,0, 1,1,1,0, 0,1,1,1, 0,1]])
-    # score_mask3 = np.array([[1, 0,0,1,1, 0,1,1,1, 1,1,1,1, 0,1,1,1, 0,1]])
-    # score_mask1 = np.array([[1, 1,1,1,1, 0,0,0,0, 0,0,0,0, 1,1,1,0, 1,1]])#
-    # score_mask2 = np.array([[1, 0,0,0,0, 0,1,0,1, 1,1,0,0, 0,1,1,1, 0,1]])#
-    # score_mask3 = np.array([[1, 0,1,1,1, 1,1,1,1, 1,1,1,1, 0,1,0,0, 0,1]])#
-    score_mask1 = np.array([[1, 1,1,1,1, 1,0,0,0, 0,0,0,0, 1,1,1,0, 0,0]])#
-    score_mask2 = np.array([[1, 0,0,0,0, 1,1,0,0, 1,1,0,0, 0,1,1,1, 0,0]])#
-    score_mask3 = np.array([[1, 0,0,1,1, 0,1,1,1, 1,1,1,1, 0,1,0,0, 0,0]])#
-    # score_mask1 = np.array([[1, 1,1,0,0, 1,0,0,0, 0,0,0,0, 1,1,1,0, 1,1]])
-    # score_mask2 = np.array([[1, 0,0,0,0, 0,1,0,1, 1,1,0,0, 0,1,1,1, 0,1]])
-    # score_mask3 = np.array([[1, 0,0,1,1, 1,1,1,1, 1,1,1,1, 0,1,0,0, 0,1]])
-    # print('dash')
-    # mean_class_acc = mean_class_accuracy(data1[0:N_f, 1:-1][mask], labels[0:N_f][mask])
-    # print('rear')
-    # mean_class_acc = mean_class_accuracy(data2[0:N_f, 1:-1][mask], labels[0:N_f][mask])
-    # print('right')
-    # mean_class_acc = mean_class_accuracy(data3[0:N_f, 1:-1][mask], labels[0:N_f][mask])
-    data1 = data1 * score_mask1
-    data2 = data2 * score_mask2
-    data3 = data3 * score_mask3
-    data = np.stack([data1[0:N_f], data2[0:N_f], data3[0:N_f]],axis=0).max(axis=0)
-    for i in range(data.shape[1] - 1):
-        if np.sort(data[:, i + 1])[-20:].mean() < 0.4:
-            data[:, i + 1] = data[:, i + 1] / (data[:, i + 1].max() + 0.001)
-            data[:, i + 1] = np.convolve(data[:, i + 1], np.ones(7) / 7, 1)
-    data = add_bottle(data,'Dashboard_'+video,True)
-    data = add_cellphone(data, 'Dashboard_' + video, True)
-    stamps = data[:, 1] > data[:, 1].mean()
-    # plt.figure()
-    # plt.plot(data[:,1]>0.8)
-    # plt.plot(mask)
-    # plt.title(video)
-    # plt.show()
-    np.savetxt(r'G:\lessons\data\AICityTrack3\AICityTrack3\2022\data_result\val49831\\'+video+'_results_4.txt',data,fmt='%.4f')
-
-    # mean_class_acc = mean_class_accuracy(data[:,1:-1], labels[0:N_f])#3[0:N_f,1:-2]
-
-    result = np.vstack([data[:,0],np.argmax(data[:,1:19],axis=1),np.max(data[:,1:19],axis=1)]).transpose()
-
-    # primary link
-    all_proposals = link_tubes(data, MAX_INTERRUPTION=4)  # 0.8
-
-    show_time_bar(all_proposals, labels, step=step, N_f=N_f, video=video)
-    # second link
-    all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)  ###TODO
-    # cnt = 0
-    # for x in all_proposals[CLASSES[2]]:
-    #     if len(x) > 3:
-    #         cnt += 1
-    # if cnt > 10:
-    #     print("{:s} will use new parameters...._________________{:d}".format(video, cnt))
-    #     for i in range(data.shape[1] - 1):
-    #         # if np.sort(data[:, i + 1])[-20:].mean() < 0.4:
-    #         data[:, i + 1] = data[:, i + 1] / (data[:, i + 1].max() + 0.001)
-    #         data[:, i + 1] = np.convolve(data[:, i + 1], np.ones(7) / 7, 1)
-    #     all_proposals = link_tubes(data, MAX_INTERRUPTION=4)
-    #     all_proposals = post_link(all_proposals, max_interp_time=8, min_const_time=14, max_const_time=28)  ###TODO
-
-    all_proposals = modify_margin(all_proposals, data, zhy_stamps, step)
-    # filtered_proposals =all_proposals
-    #
-    # filter
-    filtered_proposals = filter_proposals(all_proposals,
-                                          min_const_time=[10, 32],
-                                          TOP_K=5)
-    show_time_bar(filtered_proposals, labels, step=step, N_f=N_f, video=video, mark=False)
-
-    # show_time_bar(filtered_proposals, labels, step=step, N_f=N_f, video=multi_videos[0], mark=False)
-    filtered_proposals = cascade_filter(filtered_proposals, data, None, step, pwm_th=0.20, min_const_time=10,
-                                        max_const_time=32)  # 8
-    filtered_proposals = filter_proposals(filtered_proposals,
-                                          min_const_time=[14, 32],
-                                          TOP_K=1)
-    filtered_proposals = filter_multi_out(filtered_proposals, N_f)
-
-    show_time_bar(filtered_proposals, labels, step=step, N_f=N_f, video=video,mark=True)
-    mean_class_acc = mean_class_accuracy(proposals_trans(filtered_proposals, N_f), labels[0:N_f])
-    if show:
-        show_time_bar(filtered_proposals,labels,step=step,N_f=N_f)
-
-    if outprint:
-        print("\nFiltered results are as following...\n")
-        bar = np.zeros(len(data))
-        correct=0
-        count = 0
-        for clsname in CLASSES:
-            for i, proposal in enumerate(filtered_proposals[clsname]):
-                array_proposal = np.array(proposal)
-                out = [array_proposal[0][0], array_proposal[-1][0], array_proposal[:, 2].mean(),i,len(proposal)*step] ###TODO 得分计算还有待完善，没有考虑中间未识别出的帧的影响
-                if array_proposal[:,-1].mean()<0.9:
-                    continue
-                count +=1
-                stamps[int(array_proposal[0][0] // 4):int(array_proposal[-1][0] // 4)] = 0
-                bar[int(array_proposal[0][0] // 4):int(array_proposal[-1][0] // 4)] = 1
-                if np.abs(out[0]/8-time_stamps[clsname][0]+1)<=1 and np.abs(out[1]/8-time_stamps[clsname][1]+1)<=1:
-                    correct +=1
-                print(
-                    "{:s}-{:d}: {:03d}:{:03d}, {:02d}:{:02d}.{:02d}--{:02d}:{:02d}.{:02d}, {:02d}:{:02d}.{:02d}".format(
-                        clsname, i, int(out[0]), int(out[1]),
-                        int(out[0] / 8 // 60),
-                        int(out[0] / 8 % 60),
-                        int((out[0] / 8 % 60 - int(out[0] / 8 % 60)) * 100),
-                        int(out[1] / 8 // 60),
-                        int(out[1] / 8 % 60),
-                        int((out[1] / 8 % 60 - int(out[1] / 8 % 60)) * 100),
-                        int((out[1] - out[0]) / 8 // 60),
-                        int((out[1] - out[0]) / 8 % 60),
-                        int(((out[1] - out[0]) / 8 % 60 - int(
-                            (out[1] - out[0]) / 8 % 60)) * 100)))
-        for cls,clsname in enumerate(CLASSES):
-            if cls!=0:
-                for i, proposal in enumerate(filtered_proposals[clsname]):
-                    array_proposal = np.array(proposal)
-                    out = [array_proposal[0][0], array_proposal[-1][0]]
-                    plt.figure()
-                    if cls==1:
-                        out_bar = data[:,cls + 1]
-                        plt.plot(out_bar, label='score')
-                        bar = np.zeros(len(out_bar))
-                        plt.plot(labels == cls, label='gt')
-                        bar[int(proposal[0][0] // 4):int(proposal[-1][0] // 4)] = 1
-                        plt.plot(bar, label='pred')
-                        plt.legend()
-                        plt.title("{:s} {:s} {:.4f} {:d}".format(video, clsname, data[:, 1].mean(),
-                                                                 int(np.abs(out[0] / 8 - time_stamps[clsname][
-                                                                     0]) <= 1 and np.abs(
-                                                                     out[1] / 8 - time_stamps[clsname][1]) <= 1)))
-                    # else:
-                    #     out_bar = data[max(0,int(proposal[0][0]//4-100)):min(len(data),int(proposal[-1][0]//4+100)),cls+1]
-                    #     plt.plot(out_bar,label='score')
-                    #     bar = np.zeros(len(out_bar))
-                    #     plt.plot(labels[max(0,int(proposal[0][0]//4-100)):min(len(data),int(proposal[-1][0]//4+100))] == cls,label='gt')
-                    #     bar[int(proposal[0][0]//4)-max(0,int(proposal[0][0]//4-100)):int(proposal[-1][0]//4)-max(0,int(proposal[0][0]//4-100))]=1
-                    #     plt.plot(bar,label='pred')
-                    #     plt.legend()
-                    #     plt.title("{:s} {:s} {:.4f} {:d}".format(video,clsname, data[:, 1].mean(),
-                    #                                              int(np.abs(out[0]/8-time_stamps[clsname][0])<=1 and np.abs(out[1]/8-time_stamps[clsname][1])<=1)))
-                    plt.show()
-        plt.figure()
-        stamps = stamps[0:-1] ^ stamps[1:]
-        stamps_c = stamps.copy()
-        window = 15 * 8 // step
-        # correct=0
-        # count = 0
-        for i in range(1, len(stamps) - window):
-            if stamps[i:i + window].sum() > 2:
-                indice = np.where(stamps[i:i + window] == 1)[0]
-                stamps_c[i + 1 + indice[0]:i + indice[-1] - 1] = 0
-        plt.plot(stamps_c,label='pred')
-        plt.plot(labels>0,label='gt')
-        plt.legend()
-        plt.title("{:s} {:.4f} {:d}".format(video, data[:, 1].mean(), int(stamps_c.sum())))
-        plt.show()
-        print(0)
-        # for clsname in CLASSES:
-        #     for i, proposal in enumerate(filtered_proposals[clsname]):
-        #         count += 1
-        #         array_proposal = np.array(proposal)
-        #         out = [array_proposal[0][0], array_proposal[-1][0]]
-        #         left_points = np.where(stamps_c[:int(out[0] // 4 + 2)])[0]
-        #         if len(left_points) > 0 and left_points[-1] < (15 * 8 // step):
-        #             proposal[0][0] = (left_points[-1] + 1) * step
-        #         right_points = np.where(stamps_c[int(out[1] // 4 - 2):])[0]
-        #         if len(right_points) > 0 and right_points[0] < (15 * 8 // step):
-        #             proposal[-1][0] = max(-8, min(right_points[0] * step - 20, 8)) + out[1]
-        #             print(proposal[-1][0]-out[1])
-        #         if np.abs(proposal[0][0]/8-time_stamps[clsname][0])<=1 and np.abs(proposal[-1][0]/8-time_stamps[clsname][1])<=1:
-        #             correct += 1
-        P=correct/count
-        R=correct/17
-        print("P={:.4f}\nR={:.4f}\nF1={:.4f}".format(P,R,P*R*2/(P+R)))
-    return
 
 def prepare_det(pose_txt,bottle_det_dir,cellphone_det_dir):
     # #####get bottle detection
@@ -1295,6 +1094,7 @@ def parse_args():
     parser.add_argument('--bottle_det_dir', help='bottle detection result direction')
     parser.add_argument('--cellphone_det_dir', help='cellphone detection result direction')
     parser.add_argument('--TAL_result_dir', help='temporal action localization result direction')
+    parser.add_argument('--video_ids', type=str, default='video_ids.csv', help='video ids file')
     args = parser.parse_args()
     return args
 
@@ -1304,7 +1104,7 @@ if __name__=="__main__":
     build_pose_txt(args.pose_pkl, args.pose_pkl[0:-4]+'.txt')
     prepare_det(args.pose_pkl[0:-4]+'.txt', args.bottle_det_dir, args.cellphone_det_dir)
     videos_info=[]
-    with open(os.path.join(AICITY_DATA_ROOT,"video_ids.csv"), 'r') as f:
+    with open(args.video_ids, 'r') as f:
         f_csv = csv.reader(f)
         headers = next(f_csv)
         for row in f_csv:
@@ -1312,7 +1112,7 @@ if __name__=="__main__":
 
     results_root = args.recog_result_dir#'./Swin-transformer/Video-Swin-Transformer-master/submit_results_source'#r'H:\Competition\AiCity\swin-transformer\results'
     # post=['_latest_results_4','_best_top1_acc_epoch_1_results_4', '_best_top1_acc_epoch_5_results_4']
-    post=['_latest_results_4','_latest_results_4','_latest_results_4']
+    post=['_swin_dashboard_results_4','_swin_rearview_results_4','_swin_rightside_results_4']
     with open("results_submission.txt",'w') as f:
         print("\nWriting...\n")
         Ps=[]
