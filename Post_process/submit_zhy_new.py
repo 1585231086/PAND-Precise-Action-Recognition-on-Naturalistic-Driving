@@ -346,7 +346,7 @@ def modify_margin(proposals,data ,zhy_stamps,step):
     all_proposals = dict()
     data_new = data.copy()
     for cls in cls_idxs[1:]:
-        if cls in [0,]:#1,2,3,4,5,6,7,8,9,10,11,12,14
+        if cls in [0,1,2,3,4,5,6,7,8,9,10,11,12,14]:#
             continue
         max_idx = -1
         max_score = 0
