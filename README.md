@@ -106,7 +106,7 @@ cd Post_process
 python submit_zhy_new.py --pose_pkl /xxxx/Aicity/pose/B_pose.pkl --recog_result_dir ../Swin-transformer/Video-Swin-Transformer-master/submit_results_source --bottle_det_dir /xxxx/Aicity/bottle_detect --cellphone_det_dir /xxxx/Aicity/cellphone_detect --TAL_result_dir ../TAL/aicity/output --video_ids /xxxx/Aicity/data/video_ids.csv
 
 
-Finally, the results can be seen in ../TAL/aicity/output.
+Finally, the results can be seen in results_submission.txt.
 ```
 ### Contact
 Hangyue Zhao, zhaohy21315@bupt.edu.cn
