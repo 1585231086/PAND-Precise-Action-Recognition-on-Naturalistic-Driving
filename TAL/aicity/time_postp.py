@@ -205,7 +205,10 @@ def sub_processor(raw_file, out_file,f,dash,rear,right,det_file,link_file,first)
     #         position=pid,
     #         desc=text
     #     )
-    data = json.load(open(raw_file, 'r'))
+    data_ori = json.load(open(raw_file, 'r'))
+    data = dict(results=dict())
+    for key in data_ori['results'].keys():
+        data['results'][key.split('/')[1]] = data_ori['results'][key]
     dict_ = []
 
     #output json file
@@ -508,19 +511,7 @@ if __name__ == "__main__":
     """ Number of thread for post processing"""
     # thread_num = args.thread
     post = ['_swin_dashboard_results_4', '_swin_rearview_results_4', '_swin_rightside_results_4']
-
-    if args.first:
-        with open(args.video_ids, "w") as f:
-            csv_writer = csv.writer(f, dialect="excel")
-            csv_writer.writerow(['video', 'fps', 'sample_fps', 'count', 'sample_count'])
-
-        video_root_dir = os.path.join(AICITY_DATA_ROOT,'videos')
-        for user in os.listdir(video_root_dir):
-            for file in os.listdir(os.path.join(video_root_dir, user)):
-                if file.endswith(('.MP4', '.mp4')):
-                    with open(args.video_ids, "a") as f:
-                        csv_writer = csv.writer(f, dialect="excel")
-                        csv_writer.writerow([file.split('.')[0], fpsV, fpsV, count_total, count_total])
+        
     videos_info = []
     with open(args.video_ids, 'r') as f: # TODO video_ids.cv
         f_csv = csv.reader(f)
