@@ -159,8 +159,8 @@ def softNMS(video,f,det_file,link_file,dash,first):
         tscore = np.array(tscore)
         tlabel=np.array(tlabel)
 
-        tt1 = np.maximum(tmp_start-3, tstart)#TODO
-        tt2 = np.minimum(tmp_end+3, tend)#TODO
+        tt1 = np.maximum(tmp_start-1, tstart)#TODO
+        tt2 = np.minimum(tmp_end+1, tend)#TODO
         intersection = tt2 - tt1
         duration = tend - tstart
         tmp_width = tmp_end - tmp_start
