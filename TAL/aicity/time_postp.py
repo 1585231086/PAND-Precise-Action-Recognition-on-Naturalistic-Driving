@@ -518,10 +518,6 @@ if __name__ == "__main__":
         for user in os.listdir(video_root_dir):
             for file in os.listdir(os.path.join(video_root_dir, user)):
                 if file.endswith(('.MP4', '.mp4')):
-                    videos_path.append(os.path.join(video_root_dir, user, file))
-                    capV = cv2.VideoCapture(os.path.join(video_root_dir, user, file))
-                    fpsV = int(capV.get(cv2.CAP_PROP_FPS))
-                    count_total = int(capV.get(cv2.CAP_PROP_FRAME_COUNT))
                     with open(args.video_ids, "a") as f:
                         csv_writer = csv.writer(f, dialect="excel")
                         csv_writer.writerow([file.split('.')[0], fpsV, fpsV, count_total, count_total])
