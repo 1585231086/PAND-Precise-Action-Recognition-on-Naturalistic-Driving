@@ -159,8 +159,8 @@ def softNMS(video,f,det_file,link_file,dash,first):
         tscore = np.array(tscore)
         tlabel=np.array(tlabel)
 
-        tt1 = np.maximum(tmp_start-5, tstart)
-        tt2 = np.minimum(tmp_end+5, tend)
+        tt1 = np.maximum(tmp_start-3, tstart)#TODO
+        tt2 = np.minimum(tmp_end+3, tend)#TODO
         intersection = tt2 - tt1
         duration = tend - tstart
         tmp_width = tmp_end - tmp_start
@@ -209,6 +209,7 @@ def sub_processor(raw_file, out_file,f,dash,rear,right,det_file,link_file,first)
     data = dict(results=dict())
     for key in data_ori['results'].keys():
         data['results'][key.split('/')[1]] = data_ori['results'][key]
+        print(key)
     dict_ = []
 
     #output json file
